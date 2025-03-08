@@ -41,7 +41,7 @@ class Neuron :
         for i in tqdm(range(self.nb_iter)):
             a = self.model()
             
-            if i % 100 :
+            if i % 100 == 0 :
                 c_values.append(self.cost(a))
 
             dw, db = self.gradients(a)
