@@ -1,10 +1,16 @@
 import numpy as np
 from abc import ABC, abstractmethod
 
-class Metric:
+class Metric(ABC):
     
+    @abstractmethod
+    @staticmethod
+    def evaluate():
+        pass
+
+    @abstractmethod
+    @staticmethod
+    def gradientsForNeuron():
+        pass
 
 
-    # @staticmethod
-    # def log_loss(y_train, a):
-    #     return -np.mean(y_train * np.log(a) + (1 - y_train) * np.log(1 - a))
