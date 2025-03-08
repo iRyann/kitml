@@ -2,6 +2,7 @@ import numpy as np
 import metrics
 import activations
 from tqdm import tqdm
+from sklearn.metrics import accuracy_score
 
 class Neuron :
     rgn = np.random.default_rng(25)
@@ -29,18 +30,20 @@ class Neuron :
 
     def train(self):
 
-        c_values = []
+        cost_values = []
+        accuracy_values = []
 
         for i in tqdm(range(self.nb_iter)):
             a = self.model()
             
-            if i % 100 == 0 :
-                c_values.append(self.m.evaluate(self.y_train, a))
+            if i % 10 == 0 :
+                cost_values.append(self.m.evaluate(self.y_train, a))
+                accuracy_values.append(accuracy_score(self.y_train, a))
 
             dw, db = self.m.gradientsForNeuron(self.y_train, a)
             self.update(dw, db)
         
-        return c_values
+        return cost_values, accuracy_values
         
     def predict(self, x):
         z = self.w.dot(x) + self.b
