@@ -4,13 +4,11 @@ from abc import ABC, abstractmethod
 class Metric(ABC):
     
     @abstractmethod
-    @staticmethod
-    def evaluate():
+    def evaluate(self):
         pass
 
     @abstractmethod
-    @staticmethod
-    def gradientsForNeuron():
+    def gradientsForNeuron(self):
         pass
 
 
