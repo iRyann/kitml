@@ -7,7 +7,6 @@ from sklearn.metrics import accuracy_score
 class Neuron :
     rgn = np.random.default_rng(25)
 
-    # epoch
     def __init__(self, x_train, y_train, x_test, y_test, metric : Metric, eta, nb_epoch, a : Activation):
         self.w = Neuron.rgn.uniform(size = x_train.shape[1])
         self.b = Neuron.rgn.uniform() * np.ones(x_train.shape[1])
