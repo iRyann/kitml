@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "${workspaceFolder}${pathSeparator}.venv/bin/python3.10",
+    "terminal.integrated.env.osx": {"PYTHONPATH": "${workspaceFolder}"}
+}
