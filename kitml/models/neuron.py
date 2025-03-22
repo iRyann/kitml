@@ -4,6 +4,8 @@ from kitml.activations.activation import Activation
 from tqdm import tqdm
 from sklearn.metrics import accuracy_score
 
+# TODO Retirer les trains et test set au profit de paramètre de méthode
+# TODO Ajouter le seuil en paramètre (relatif à la fonction d'activation !!)
 class Neuron :
     rgn = np.random.default_rng(25)
 
