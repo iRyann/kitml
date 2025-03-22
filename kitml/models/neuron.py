@@ -8,8 +8,8 @@ class Neuron :
     rgn = np.random.default_rng(25)
 
     def __init__(self, x_train, y_train, x_test, y_test, metric : Metric, eta, nb_epoch, a : Activation):
-        self.w = Neuron.rgn.uniform(size = x_train.shape[1])
-        self.b = Neuron.rgn.uniform() * np.ones(x_train.shape[1])
+        self.w = np.reshape(np.array(Neuron.rgn.uniform(size = x_train.shape[1])), shape = (x_train.shape[1],1))
+        self.b = Neuron.rgn.uniform()
         self.m = metric
         self.x_train = x_train
         self.x_test = x_test
@@ -20,7 +20,7 @@ class Neuron :
         self.activation = a
 
     def model(self) :
-        z = self.w.dot(self.x_train) + self.b
+        z = self.x_train.dot(self.w) + self.b
         return self.activation.evaluate(z)
 
     def update(self, dw, db):
@@ -36,14 +36,16 @@ class Neuron :
             a = self.model()
             
             if i % 10 == 0 :
-                cost_values.append(self.m.evaluate(self.y_train, a))
-                accuracy_values.append(accuracy_score(self.y_train, a))
+                b = np.reshape(a,(4,1)).T
+                cost_values.append(self.m.evaluate(self.y_train, b))
+                y_pred = self.activation.predict(b, 0.5, False)
+                accuracy_values.append(accuracy_score(self.y_train, y_pred))
 
-            dw, db = self.m.gradientsForNeuron(self.y_train, a)
+            dw, db = self.m.gradientsForNeuron(self.y_train, a, self.x_train)
             self.update(dw, db)
         
         return cost_values, accuracy_values
         
     def predict(self, x):
-        z = self.w.dot(x) + self.b
-        return self.activation.evaluate(z) >= 0
+        z = x.dot(self.w) + self.b
+        return self.activation.predict(z, 0.5, True)

@@ -1,4 +1,4 @@
-from activation import Activation
+from kitml.activations.activation import Activation
 import numpy as np
 
 class Sigmoid(Activation) :

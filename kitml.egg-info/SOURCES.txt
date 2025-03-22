@@ -1,0 +1,6 @@
+setup.py
+kitml.egg-info/PKG-INFO
+kitml.egg-info/SOURCES.txt
+kitml.egg-info/dependency_links.txt
+kitml.egg-info/requires.txt
+kitml.egg-info/top_level.txt
