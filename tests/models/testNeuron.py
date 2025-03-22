@@ -5,15 +5,14 @@ from kitml.metrics.logLoss import LogLoss
 from kitml.activations.sigmoid import Sigmoid
 import numpy as np
 
-def testNeuronAnd():
+def test_neuron_and():
     x_train, y_train = and_set()
-    neuron = Neuron(x_train, y_train, x_train, y_train, LogLoss(), 0.5, 1000, Sigmoid())
-    cost, acc = neuron.train()
+    neuron = Neuron(input_size=x_train.shape[1], metric=LogLoss(), eta=0.5, nb_epoch=1000, a=Sigmoid())
+    cost, acc = neuron.train(x_train, y_train, error_threshold=0.01)
 
-    # Tracer le coût
     plt.figure(figsize=(12, 5))
-    absciss = np.linspace(0, len(acc) * 10 + 10, len(acc), dtype = int)
-    
+    absciss = np.linspace(0, len(acc) * 10 + 10, len(acc), dtype=int)
+
     plt.subplot(1, 2, 1)
     plt.plot(absciss, cost, label='Cost')
     plt.xlabel('Epoch')
@@ -21,7 +20,6 @@ def testNeuronAnd():
     plt.title('Training Cost')
     plt.legend()
 
-    # Tracer la précision
     plt.subplot(1, 2, 2)
     plt.plot(absciss, acc, label='Accuracy', color='orange')
     plt.xlabel('Epoch')
@@ -32,6 +30,19 @@ def testNeuronAnd():
     plt.tight_layout()
     plt.show()
 
-    print(neuron.predict(x_train))
+    print(f"Sur l'entrée \n {x_train},\n le neurone prédit bien les classes :\n {neuron.predict(x_train)}")
+    print("Toutefois, on peut visualiser la séparation linéaire opérée par le perceptron.")
 
-testNeuronAnd()
+    f = lambda x: - (neuron.w[0] * x + neuron.b) / neuron.w[1]
+    x_values = np.linspace(-0.5, 1.5, 200)
+
+    plt.scatter(x_train[:, 0], x_train[:, 1], label='Données')
+    plt.plot(x_values, f(x_values), label='Ligne de décision', color='red')
+    plt.xlabel("x1")
+    plt.ylabel("x2")
+    plt.legend()
+    plt.grid(True)
+    plt.title("Ligne de décision du perceptron")
+    plt.show()
+
+test_neuron_and()

@@ -10,5 +10,6 @@ setup(
         'matplotlib>=3.1.0',
         'scikit-learn>=0.22',
         'tqdm',
+        'ABC'
     ],
 )
