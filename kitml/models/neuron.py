@@ -31,12 +31,12 @@ class Neuron:
             a = self.model(x_train)
 
             if i % 10 == 0:
-                cost = self.m.evaluate(y_train.T, a)
+                cost = self.m.evaluate(y_train, a)
                 cost_values.append(cost)
-                y_pred = self.activation.predict(a, threshold, False)
-                accuracy_values.append(accuracy_score(y_train.T, y_pred))
+                y_pred = self.activation.predict(a, threshold, False) # Already evaluated
+                accuracy_values.append(accuracy_score(y_train, y_pred)) # TODO : Standardiser les arrays en entrée
 
-                # Critère d'arrêt basé sur l'erreur quadratique
+                # Critère d'arrêt basé sur l'erreur
                 if cost < error_threshold:
                     print(f"Convergence atteinte à l'itération {i} avec un coût de {cost}.")
                     break
