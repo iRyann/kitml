@@ -5,7 +5,11 @@ class Activation(ABC) :
     @abstractmethod
     def evaluate(self, x) :
         pass
-
+    
+    @abstractmethod
+    def derivative(self, x):
+        pass
+    
     def predict(self, z, threshold, evaluate = True):
         res = z
         

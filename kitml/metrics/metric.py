@@ -8,7 +8,7 @@ class Metric(ABC):
         pass
 
     @abstractmethod
-    def gradientsForNeuron(self):
+    def gradientsForPerceptron(self):
         pass
 
 

@@ -1,14 +1,14 @@
 import matplotlib.pyplot as plt
 from kitml.utilities.dataset import and_set
-from kitml.models.neuron import Neuron
+from kitml.models.perceptron import Perceptron
 from kitml.metrics.logLoss import LogLoss
 from kitml.activations.sigmoid import Sigmoid
 import numpy as np
 
-def test_neuron_and():
+def test_perceptron_and():
     x_train, y_train = and_set()
-    neuron = Neuron(input_size=x_train.shape[1], metric=LogLoss(), eta=0.5, nb_epoch=1000, a=Sigmoid())
-    cost, acc = neuron.train(x_train, y_train, error_threshold=0.01)
+    perceptron = Perceptron(input_size=x_train.shape[1], metric=LogLoss(), eta=0.5, nb_epoch=1000, a=Sigmoid())
+    cost, acc = perceptron.train(x_train, y_train, error_threshold=0.01)
 
     plt.figure(figsize=(12, 5))
     absciss = np.linspace(0, len(acc) * 10 + 10, len(acc), dtype=int)
@@ -30,10 +30,10 @@ def test_neuron_and():
     plt.tight_layout()
     plt.show()
 
-    print(f"Sur l'entrée \n {x_train},\n le neurone prédit bien les classes :\n {neuron.predict(x_train)}")
+    print(f"Sur l'entrée \n {x_train},\n le Perceptrone prédit bien les classes :\n {perceptron.predict(x_train)}")
     print("Toutefois, on peut visualiser la séparation linéaire opérée par le perceptron.")
 
-    f = lambda x: - (neuron.w[0] * x + neuron.b) / neuron.w[1]
+    f = lambda x: - (perceptron.w[0] * x + perceptron.b) / perceptron.w[1]
     x_values = np.linspace(-0.5, 1.5, 200)
 
     plt.scatter(x_train[:, 0], x_train[:, 1], label='Données')
@@ -45,4 +45,4 @@ def test_neuron_and():
     plt.title("Ligne de décision du perceptron")
     plt.show()
 
-test_neuron_and()
+test_perceptron_and()

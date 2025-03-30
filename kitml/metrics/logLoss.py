@@ -10,7 +10,7 @@ class LogLoss(Metric) :
 
         return -np.mean(y_true * np.log(p) + (1 - y_true) * np.log(1 - p))
     
-    def gradientsForNeuron(self, y_true, y_pred, x) :
+    def gradientsForPerceptron(self, y_true, y_pred, x) :
 
         dw = 1 / len(y_true) * np.dot(x.T, y_pred - y_true)
         db = 1 / len(y_true) * np.sum(y_pred - y_true)

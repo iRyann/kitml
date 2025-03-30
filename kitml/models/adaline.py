@@ -6,7 +6,7 @@ from sklearn.metrics import accuracy_score
 
 class Adaline:
     """
-    Adaline (Adaptive Linear Neuron) classifier.
+    Adaline (Adaptive Linear Perceptron) classifier.
 
     Attributes:
         rgn (np.random.Generator): Random number generator.
