@@ -1,6 +1,8 @@
 from abc import abstractmethod, ABC
 import numpy as np
 class Activation(ABC) : 
+    
+    THRESHOLD = 0.
 
     @abstractmethod
     def evaluate(self, x) :
@@ -10,11 +12,11 @@ class Activation(ABC) :
     def derivative(self, x):
         pass
     
-    def predict(self, z, threshold, evaluate = True):
+    def predict(self, z, evaluate = True):
         res = z
         
         if evaluate:
             res = self.evaluate(res)
     
-        return np.where(res >= threshold, 1, 0)
+        return np.where(res >= self.THRESHOLD, 1, 0)
 

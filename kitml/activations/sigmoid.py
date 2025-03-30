@@ -3,6 +3,8 @@ import numpy as np
 
 class Sigmoid(Activation) :
     
+    THRESHOLD = 0.5
+
     def evaluate(self, x):
         return 1 / (1 + np.exp(-x))
     

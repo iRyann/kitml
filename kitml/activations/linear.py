@@ -1,7 +1,8 @@
-from activations.activation import Activation
+from kitml.activations.activation import Activation
 
 class Linear(Activation):
-    
+    THRESHOLD = 0.5
+
     def evaluate(self, x):
         return x
 

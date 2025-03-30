@@ -1,8 +1,13 @@
 import matplotlib.pyplot as plt
 from kitml.utilities.dataset import and_set
 from kitml.models.perceptron import Perceptron
+
 from kitml.metrics.logLoss import LogLoss
+from kitml.metrics.meanQuadraticError import MeanQuadraticError
+
 from kitml.activations.sigmoid import Sigmoid
+from kitml.activations.linear import Linear
+
 import numpy as np
 
 def test_perceptron_and():
