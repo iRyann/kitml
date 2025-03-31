@@ -13,3 +13,6 @@ print(x)
 
 print("\nMatrice avec biais :")
 print(x_with_bias)
+
+y_true = np.argmax(np.identity(3), axis=0)
+print(y_true)

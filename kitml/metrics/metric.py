@@ -11,4 +11,8 @@ class Metric(ABC):
     def gradientsForPerceptron(self):
         pass
 
+    @abstractmethod
+    def gradientsForSingleLayerPerceptron(self):
+        pass
+
 
