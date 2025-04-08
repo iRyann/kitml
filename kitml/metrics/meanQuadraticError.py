@@ -56,5 +56,9 @@ class MeanQuadraticError(Metric):
         
         return dw, db
 
+    def gradient(self, y_true, y_pred):
+
+        m = y_true.shape[1] 
+        return 2 * (y_pred - y_true) / m
     
     

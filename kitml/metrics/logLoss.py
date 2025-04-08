@@ -37,4 +37,13 @@ class LogLoss(Metric):
         db = 1 / m * np.sum(dz, axis=1, keepdims=True)  # Forme (output_size, 1)
         
         return dw, db
+    
+    
+    def gradient(self, y_true, y_pred):
+        
+        eps = 1e-15
+        y_pred = np.clip(y_pred, eps, 1 - eps)
+        
+        # Pour softmax + entropie croisée, le gradient est simplement (y_pred - y_true)
+        return y_pred - y_true
  

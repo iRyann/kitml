@@ -8,6 +8,10 @@ class Metric(ABC):
         pass
 
     @abstractmethod
+    def gradient(self):
+        pass
+
+    @abstractmethod
     def gradientsForPerceptron(self):
         pass
 
