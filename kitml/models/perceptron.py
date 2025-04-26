@@ -50,19 +50,18 @@ class Perceptron:
         return cost_values, accuracy_values
 
     def _train_adaline(self, x_train, y_train, iteration, cost_values, accuracy_values, error_threshold):
-        a_list = []
         for x_i, y_i in zip(x_train, y_train):
             x_i = x_i.reshape(1, -1)
             y_i = y_i.reshape(1, 1)
             a = self.model(x_i)
-            if iteration % 10 == 0:
-                a_list.append(a)
             dw, db = self.m.gradientsForPerceptron(y_i, a, x_i)
             self.update(dw, db)
 
+        # Évaluation sur l'ensemble des données
         if iteration % 10 == 0:
-            end = self._evaluate_and_check_convergence(y_train, np.vstack(a_list), iteration, cost_values, accuracy_values, error_threshold)
-            if(end) : return 
+            a_all = self.model(x_train)
+            return self._evaluate_and_check_convergence(y_train, a_all, iteration, cost_values, accuracy_values, error_threshold)
+
 
     def _train_standard(self, x_train, y_train, iteration, cost_values, accuracy_values, error_threshold):
         a = self.model(x_train)
@@ -82,6 +81,8 @@ class Perceptron:
         if cost < error_threshold:
             print(f"Convergence atteinte à l'itération {iteration} avec un coût de {cost}.")
             return True
+        else:
+            return False
 
     def predict(self, x):
         z = x.dot(self.w) + self.b
