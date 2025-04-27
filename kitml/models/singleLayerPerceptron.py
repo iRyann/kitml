@@ -31,11 +31,15 @@ class SingleLayerPerceptron:
         cost_values = []
         accuracy_values = []
 
-        if len(y_train.shape) == 1 or y_train.shape[1] == 1:
+        # TODO : Gestion explicite du type d'opération (classification ou regression)
+        if isinstance(self.activation, SoftMax) and (len(y_train.shape) == 1 or y_train.shape[1] == 1):
             y_train_one_hot = np.zeros((y_train.shape[0], self.output_size))
             for i, y in enumerate(y_train):
                 y_train_one_hot[i, int(y)] = 1
             y_train = y_train_one_hot
+        elif len(y_train.shape) > 1 and y_train.shape[1] != self.output_size:
+            raise ValueError(f"Le nombre de labels de y_train ({y_train.shape[1]}) ne correspond pas à output_size ({self.output_size}).")
+    
 
         for i in tqdm(range(self.nb_iter)):
             a = self.model(x_train)  # a : (output_size, n_samples)
@@ -66,6 +70,11 @@ class SingleLayerPerceptron:
     def predict(self, x):
         if len(x.shape) == 1:
             x = x.reshape(1, -1)
-        
+    
         z = self.w @ x.T + self.b
-        return np.argmax(self.activation.evaluate(z), axis=0)
+        a = self.activation.evaluate(z)
+        
+        if isinstance(self.activation, SoftMax):
+            return np.argmax(a, axis=0)
+        else:
+            return a.T
