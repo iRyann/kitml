@@ -76,7 +76,14 @@ class Perceptron:
         cost = self.m.evaluate(y_train, a)
         cost_values.append(cost)
         y_pred = self.activation.predict(a, False)
-        accuracy_values.append(accuracy_score(y_train, y_pred))
+        # Si on utilise une activation Linear, on est probablement en régression
+        if isinstance(self.activation, Linear):
+            # Utiliser un coefficient de détermination R² pour la régression
+            from sklearn.metrics import r2_score
+            performance = r2_score(y_train, y_pred)
+            accuracy_values.append(performance)  # On conserve la même liste mais avec une autre métrique
+        else:
+            accuracy_values.append(accuracy_score(y_train, y_pred))
 
         if cost < error_threshold:
             print(f"Convergence atteinte à l'itération {iteration} avec un coût de {cost}.")
@@ -86,4 +93,8 @@ class Perceptron:
 
     def predict(self, x):
         z = x.dot(self.w) + self.b
-        return self.activation.predict(z)
+        if isinstance(self.activation, Linear):
+            return z
+        else:
+            return self.activation.predict(z)
+        

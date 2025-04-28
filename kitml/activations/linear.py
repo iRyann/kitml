@@ -8,3 +8,6 @@ class Linear(Activation):
 
     def derivative(self, x):
         return 1
+
+    def predict(self, z, evaluate=True):
+        return z
