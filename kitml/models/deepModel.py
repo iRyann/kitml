@@ -1,5 +1,6 @@
 from kitml.activations.activation import Activation
 from kitml.activations.softMax import SoftMax
+from kitml.activations.sigmoid import Sigmoid
 from kitml.metrics.metric import Metric
 from kitml.models.layer import Layer
 import numpy as np
@@ -53,6 +54,11 @@ class DeepModel:
                     accuracy = np.mean(y_pred == y_true)
                     metric_list.append(accuracy)
                     print(f"Époque {epoch}/{epochs}, Coût: {cost:.4f}, Précision: {accuracy:.4f}")
+                elif isinstance(self.layers[-1].a, Sigmoid):
+                    y_pred = (a > self.layers[-1].a.THRESHOLD).astype(int)
+                    accuracy = np.mean(y_pred == y_train)
+                    metric_list.append(accuracy)
+                    print(f"Époque {epoch}/{epochs}, Coût: {cost:.4f}, Précision: {accuracy:.4f}")
                 else:
                     print(f"Époque {epoch}/{epochs}, Coût: {cost:.4f}")
 
@@ -74,5 +80,7 @@ class DeepModel:
         
         if isinstance(self.layers[-1].a, SoftMax):
             return np.argmax(output, axis=0)
+        elif isinstance(self.layers[-1].a, Sigmoid):
+            return (output > self.layers[-1].a.THRESHOLD).astype(int)
         else:
             return output

@@ -14,6 +14,7 @@ from kitml.metrics.logLoss import LogLoss
 from kitml.metrics.meanQuadraticError import MeanQuadraticError
 from kitml.models.layer import Layer
 from kitml.models.deepModel import DeepModel
+from kitml.utilities.dataset import xor_set, dataset_4_12, dataset_4_14, dataset_4_17
 
 def test_classification():
     """Test du DeepModel sur un problème de classification"""
@@ -234,15 +235,194 @@ def compare_activations():
     return results
 
 
-print("Début des tests du DeepModel...")
+# print("Début des tests du DeepModel...")
 
-# Test de classification
-classification_model = test_classification()
+# # Test de classification
+# classification_model = test_classification()
 
-# Test de régression
-# regression_model = test_regression()
+# # Test de régression
+# # regression_model = test_regression()
 
-# # Comparaison des fonctions d'activation
-# activation_results = compare_activations()
+# # # Comparaison des fonctions d'activation
+# # activation_results = compare_activations()
 
-print("\nTous les tests sont terminés.")
+# print("\nTous les tests sont terminés.")
+
+def test_deep_model_xor():
+    x_train, y_train = xor_set()
+
+    # Construction du modèle
+    layers = [
+        Layer(2, 4, ReLU()),
+        Layer(4, 4, ReLU()),
+        Layer(4, 1, Sigmoid())
+    ]
+    model = DeepModel(layers, learning_rate=0.2, loss=MeanQuadraticError(), metric=MeanQuadraticError())
+    cost, acc = model.fit(x_train, y_train, epochs=1000, error_threshold=0.01, one_hot_encoded=False)
+    
+    plt.figure(figsize=(12, 5))
+    absciss = np.linspace(0, len(acc) * 10 + 10, len(acc), dtype=int)
+    plt.subplot(1, 2, 1)
+    plt.plot(absciss, cost, label='Cost')
+    plt.xlabel('Epoch')
+    plt.ylabel('Cost')
+    plt.title('Training Cost')
+    plt.legend()
+    plt.subplot(1, 2, 2)
+    plt.plot(absciss, acc, label='Accuracy', color='orange')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.title('Training Accuracy')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig('outputs/deepmodel_xor_training.png')
+    plt.show()
+
+    print(f"Sur l'entrée \n {x_train},\n le DeepModel prédit bien les classes :\n {model.predict(x_train)}")
+    
+    # Visualisation de la frontière de décision
+    x1_min, x1_max = x_train[:, 0].min() - 0.25, x_train[:, 0].max() + 0.25
+    x2_min, x2_max = x_train[:, 1].min() - 0.25, x_train[:, 1].max() + 0.25
+    xx, yy = np.meshgrid(np.arange(x1_min, x1_max, 0.01), np.arange(x2_min, x2_max, 0.01))
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    plt.contourf(xx, yy, Z, alpha=0.8)
+    plt.scatter(x_train[:, 0], x_train[:, 1], c=y_train, edgecolors='k', marker='o', s=100)
+    plt.title('Frontière de décision du DeepModel')
+    plt.xlabel('x1')
+    plt.ylabel('x2')
+    plt.savefig('outputs/deepmodel_xor_decision_boundary.png')
+    plt.show()
+
+
+def test_deep_model_4_12():
+    # Deux classes non linéairement séparables
+
+    x_train, y_train = dataset_4_12()
+
+    # Construction du modèle
+    layers = [
+        Layer(2, 20, ReLU()),
+        Layer(20, 4, ReLU()),
+        Layer(4, 1, Sigmoid())
+    ]
+    model = DeepModel(layers, learning_rate=1.5, loss=MeanQuadraticError(), metric=MeanQuadraticError())
+    cost, acc = model.fit(x_train, y_train, epochs=1500, error_threshold=0.01, one_hot_encoded=False)
+    plt.figure(figsize=(12, 5))
+    absciss = np.linspace(0, len(acc) * 10 + 10, len(acc), dtype=int)
+    plt.subplot(1, 2, 1)
+    plt.plot(absciss, cost, label='Cost')
+    plt.xlabel('Epoch')
+    plt.ylabel('Cost')
+    plt.title('Training Cost')
+    plt.legend()
+    plt.subplot(1, 2, 2)
+    plt.plot(absciss, acc, label='Accuracy', color='orange')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.title('Training Accuracy')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig('outputs/deepmodel_4_12_training.png')
+    plt.show()
+
+    # Visualisation de la frontière de décision
+    x1_min, x1_max = x_train[:, 0].min() - 0.25, x_train[:, 0].max() + 0.25
+    x2_min, x2_max = x_train[:, 1].min() - 0.25, x_train[:, 1].max() + 0.25
+    xx, yy = np.meshgrid(np.arange(x1_min, x1_max, 0.01), np.arange(x2_min, x2_max, 0.01))
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    plt.contourf(xx, yy, Z, alpha=0.8)
+    plt.scatter(x_train[:, 0], x_train[:, 1], c=y_train, edgecolors='k', marker='o', s=100)
+    plt.title('Frontière de décision du DeepModel')
+    plt.xlabel('x1')
+    plt.ylabel('x2')
+    plt.savefig('outputs/deepmodel_4_12_decision_boundary.png')
+    plt.show()
+
+
+def test_deep_model_4_14():
+    # Trois classes non linéairement séparables
+
+    x_train, y_train = dataset_4_14()
+
+    # Construction du modèle
+    layers = [
+        Layer(2, 20, ReLU()),
+        Layer(20, 4, ReLU()),
+        Layer(4, 3, SoftMax())
+    ]
+    model = DeepModel(layers, learning_rate=1.5, loss=MeanQuadraticError(), metric=MeanQuadraticError())
+    cost, acc = model.fit(x_train, y_train, epochs=1500, error_threshold=0.01, one_hot_encoded=False)
+    plt.figure(figsize=(12, 5))
+    absciss = np.linspace(0, len(acc) * 10 + 10, len(acc), dtype=int)
+    plt.subplot(1, 2, 1)
+    plt.plot(absciss, cost, label='Cost')
+    plt.xlabel('Epoch')
+    plt.ylabel('Cost')
+    plt.title('Training Cost')
+    plt.legend()
+    plt.subplot(1, 2, 2)
+    plt.plot(absciss, acc, label='Accuracy', color='orange')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.title('Training Accuracy')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig('outputs/deepmodel_4_14_training.png')
+    plt.show()
+
+    # Visualisation de la frontière de décision
+    x1_min, x1_max = x_train[:, 0].min() - 0.25, x_train[:, 0].max() + 0.25
+    x2_min, x2_max = x_train[:, 1].min() - 0.25, x_train[:, 1].max() + 0.25
+    xx, yy = np.meshgrid(np.arange(x1_min, x1_max, 0.01), np.arange(x2_min, x2_max, 0.01))
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    plt.contourf(xx, yy, Z, alpha=0.8)
+    plt.scatter(x_train[:, 0], x_train[:, 1], c=y_train.flatten(), edgecolors='k', marker='o', s=100)
+    plt.title('Frontière de décision du DeepModel')
+
+
+def test_deep_model_4_17():
+    # Dataset non linéaire à 1 dimension
+    x_train, y_train = dataset_4_17()
+   
+    # Construction du modèle
+    layers = [
+        Layer(1, 20, ReLU()),
+        Layer(20, 4, ReLU()),
+        Layer(4, 1, Linear())
+    ]
+    model = DeepModel(layers, learning_rate=0.1, loss=MeanQuadraticError(), metric=MeanQuadraticError())
+    cost, acc = model.fit(x_train, y_train, epochs=1500, error_threshold=0.01, one_hot_encoded=False)
+    plt.figure(figsize=(12, 5))
+    absciss = np.linspace(0, len(acc) * 10 + 10, len(acc), dtype=int)
+
+    plt.plot(absciss, cost, label='Cost')
+    plt.xlabel('Epoch')
+    plt.ylabel('Cost')
+    plt.title('Training Cost')
+    plt.legend()
+    plt.savefig('outputs/deepmodel_4_17_training.png')
+    plt.show()
+    
+    # Visualisation de la courbe de regression
+    plt.figure(figsize=(10, 6))
+    plt.scatter(x_train, y_train, color='blue', label='Données d\'entraînement')
+    x1_min, x1_max = x_train[:, 0].min() - 0.25, x_train[:, 0].max() + 0.25
+    xx = np.linspace(x1_min, x1_max, 100).reshape(-1, 1)
+    y_pred = np.array([])
+    for i in range(len(xx)):
+        y_pred = np.append(y_pred, model.predict(xx[i].reshape(1, -1)))
+    y_pred = y_pred.reshape(xx.shape)
+    plt.scatter(x_train, y_train, color='red', label='Données d\'entraînement')
+    plt.plot(xx, y_pred, color='red', label='Prédictions du modèle')
+    plt.title('Prédictions du DeepModel')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.legend()
+    plt.savefig('outputs/deepmodel_4_17_decision_boundary.png')
+    plt.show()
+
+test_deep_model_4_12()
+
