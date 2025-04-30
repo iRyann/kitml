@@ -381,7 +381,12 @@ def test_deep_model_4_14():
     plt.contourf(xx, yy, Z, alpha=0.8)
     plt.scatter(x_train[:, 0], x_train[:, 1], c=y_train.flatten(), edgecolors='k', marker='o', s=100)
     plt.title('Frontière de décision du DeepModel')
+    plt.xlabel('x1')
+    plt.ylabel('x2')
+    plt.savefig('outputs/deepmodel_4_14_decision_boundary.png')
+    plt.show()
 
+from kitml.activations.tanh import Tanh
 
 def test_deep_model_4_17():
     # Dataset non linéaire à 1 dimension
@@ -389,15 +394,14 @@ def test_deep_model_4_17():
    
     # Construction du modèle
     layers = [
-        Layer(1, 20, ReLU()),
-        Layer(20, 4, ReLU()),
-        Layer(4, 1, Linear())
+        Layer(1, 20, Tanh()),
+        Layer(20, 20, Tanh()),
+        Layer(20, 1, Linear())
     ]
-    model = DeepModel(layers, learning_rate=0.1, loss=MeanQuadraticError(), metric=MeanQuadraticError())
+    model = DeepModel(layers, learning_rate=1, loss=MeanQuadraticError(), metric=MeanQuadraticError())
     cost, acc = model.fit(x_train, y_train, epochs=1500, error_threshold=0.01, one_hot_encoded=False)
-    plt.figure(figsize=(12, 5))
-    absciss = np.linspace(0, len(acc) * 10 + 10, len(acc), dtype=int)
-
+    plt.figure(figsize=(5, 5))
+    absciss = np.linspace(0, len(cost) * 10 + 10, len(cost), dtype=int)
     plt.plot(absciss, cost, label='Cost')
     plt.xlabel('Epoch')
     plt.ylabel('Cost')
@@ -424,5 +428,5 @@ def test_deep_model_4_17():
     plt.savefig('outputs/deepmodel_4_17_decision_boundary.png')
     plt.show()
 
-test_deep_model_4_12()
+test_deep_model_4_17()
 
