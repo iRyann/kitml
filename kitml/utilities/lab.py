@@ -1,3 +1,7 @@
+"""
+Module utilitaire pour des fonctions de laboratoire ou d'expérimentation.
+"""
+
 import numpy as np
 
 # Exemple de matrice de caractéristiques

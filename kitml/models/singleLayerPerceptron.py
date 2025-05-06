@@ -1,3 +1,6 @@
+"""
+Module définissant la classe SingleLayerPerceptron pour la classification multi-classes.
+"""
 import numpy as np
 from kitml.metrics.metric import Metric
 from kitml.activations.activation import Activation
@@ -6,9 +9,22 @@ from tqdm import tqdm
 from sklearn.metrics import accuracy_score
 
 class SingleLayerPerceptron:
+    """
+    Modèle de perceptron à une seule couche pour la classification multi-classes.
+    """
     rgn = np.random.default_rng(25)
 
     def __init__(self, input_size, output_size, a: Activation, metric: Metric, eta, nb_epoch):
+        """
+        Initialise le perceptron à une seule couche.
+        Args:
+            input_size: Nombre de caractéristiques en entrée.
+            output_size: Nombre de classes en sortie.
+            a: Fonction d'activation à utiliser.
+            metric: Fonction de coût (métrique de perte).
+            eta: Taux d'apprentissage.
+            nb_epoch: Nombre d'époques d'entraînement.
+        """
         self.w = SingleLayerPerceptron.rgn.random(size=(output_size, input_size))
         self.b = SingleLayerPerceptron.rgn.random(size=(output_size, 1))
         self.m = metric 
@@ -18,16 +34,38 @@ class SingleLayerPerceptron:
         self.output_size = output_size
 
     def model(self, x):
+        """
+        Calcule la sortie du modèle pour une entrée donnée.
+        Args:
+            x: Données d'entrée.
+        Returns:
+            Sortie du modèle après application de la fonction d'activation.
+        """
         if len(x.shape) == 1:
             x = x.reshape(1, -1)
         z = self.w @ x.T + self.b
         return self.activation.evaluate(z)
 
     def update(self, dw, db):
+        """
+        Met à jour les poids et les biais du modèle.
+        Args:
+            dw: Gradient des poids.
+            db: Gradient des biais.
+        """
         self.w -= self.eta * dw
         self.b -= self.eta * db
 
     def train(self, x_train, y_train, error_threshold=0.01):
+        """
+        Entraîne le modèle sur les données d'entraînement.
+        Args:
+            x_train: Données d'entrée d'entraînement.
+            y_train: Labels d'entraînement.
+            error_threshold: Seuil d'arrêt sur le coût.
+        Returns:
+            Tuple contenant les listes des coûts et des précisions à chaque itération.
+        """
         cost_values = []
         accuracy_values = []
 
@@ -54,6 +92,18 @@ class SingleLayerPerceptron:
         return cost_values, accuracy_values
 
     def _evaluate_and_check_convergence(self, y_train, a, iteration, cost_values, accuracy_values, error_threshold):
+        """
+        Évalue le modèle et vérifie la convergence.
+        Args:
+            y_train: Labels d'entraînement.
+            a: Sortie du modèle.
+            iteration: Numéro de l'itération actuelle.
+            cost_values: Liste des coûts.
+            accuracy_values: Liste des précisions.
+            error_threshold: Seuil d'arrêt sur le coût.
+        Returns:
+            Booléen indiquant si la convergence a été atteinte.
+        """
         cost = self.m.evaluate(y_train, a)
         cost_values.append(cost)
 
@@ -68,6 +118,13 @@ class SingleLayerPerceptron:
         return False
 
     def predict(self, x):
+        """
+        Prédit la classe pour de nouvelles données.
+        Args:
+            x: Données d'entrée à prédire.
+        Returns:
+            Prédictions de classes (entiers) ou sorties du modèle.
+        """
         if len(x.shape) == 1:
             x = x.reshape(1, -1)
     
