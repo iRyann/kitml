@@ -1,4 +1,4 @@
-# kitml
+# KitML
 
 KitML est une boîte à outils pour expérimenter différents perceptrons et réseaux de neurones légers en Python.
 
